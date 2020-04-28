@@ -1,0 +1,2 @@
+rootProject.name='Baza Wartości Odżywczych'
+include ':app'
