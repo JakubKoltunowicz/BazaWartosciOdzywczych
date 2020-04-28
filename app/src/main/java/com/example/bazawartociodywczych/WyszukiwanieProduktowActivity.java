@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -28,11 +29,13 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
     private static final int KOD_APARATU = 2;
 
     private BazaDanychProduktow mBazaDanychProduktow;
+    private ProduktZSerwera mProduktZSerwera;
     private EditText mWyszukiwarka;
     private Button mZrobZdjecie;
     private ListView mWidokListy;
-    private String mWybranaData;
+    private String mWybranaData, mNazwa;
     private Cursor mProdukt;
+    private Produkt mNowyProdukt;
     private ArrayList<String> mlistaProduktow;
     private ArrayAdapter adapter;
 
@@ -53,7 +56,6 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 zrobZdjecie(v);
-                produktZSerwera();
             }
         });
         wyswietlWidokListy();
@@ -107,40 +109,38 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
     }
 
     public void zrobZdjecie(View view) {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File katalog = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File zdjecie = new File(katalog, "zdjecie.jpg");
 
-        Uri imageUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider1", zdjecie);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, KOD_APARATU);
+        Uri imageUri = FileProvider.getUriForFile(this, "com.example.android.bazawartociodywczych", zdjecie);
+        intent1.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent1, KOD_APARATU);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        mNowyProdukt = new Produkt();
+        mProduktZSerwera = new ProduktZSerwera();
+        mNowyProdukt = mProduktZSerwera.wyslijZdjecie();
+        mNazwa = mNowyProdukt.getNazwaProduktu();
+        mProdukt = mBazaDanychProduktow.uzyskajIDProduktu(mNazwa);
+        int ID = -1;
+        while(mProdukt.moveToNext()) {
+            ID = mProdukt.getInt(0);
+        }
+        if(ID == -1) {
+            mBazaDanychProduktow.dodajProduktDoBazy(mNowyProdukt);
+        }
+        Intent intent2 = new Intent(WyszukiwanieProduktowActivity.this, ZapisywanieProduktuActivity.class);
+        intent2.putExtra("Nazwa", mNazwa);
+        intent2.putExtra("Data", mWybranaData);
+        startActivity(intent2);
     }
 
     public void wyswietlWiadomosc(String wiadomosc) {
         Toast.makeText(this, wiadomosc, Toast.LENGTH_SHORT).show();
-    }
-
-    public void produktZSerwera()
-    {
-        Produkt mProdukt = new Produkt();
-        String nazwa = "Papryka";
-        Cursor produkt = mBazaDanychProduktow.uzyskajIDProduktu(nazwa);
-        int ID = -1;
-        while(produkt.moveToNext()) {
-            ID = produkt.getInt(0);
-        }
-        if(ID == -1) {
-            mProdukt.setNazwaProduktu("Papryka");
-            mProdukt.setKalorycznosc(10);
-            mProdukt.setBialko(20);
-            mProdukt.setWeglowodany(30);
-            mProdukt.setTluszcze(40);
-            mProdukt.setWagaProduktu(100);
-            mBazaDanychProduktow.dodajProduktDoBazy(mProdukt);
-            Intent intent = new Intent(WyszukiwanieProduktowActivity.this, ZapisywanieProduktuActivity.class);
-            intent.putExtra("Nazwa", nazwa);
-            intent.putExtra("Data", mWybranaData);
-            startActivity(intent);
-        }
     }
 }

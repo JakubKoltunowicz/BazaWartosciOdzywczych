@@ -42,11 +42,13 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     private DatePickerDialog mOknoWyboruDaty;
     private BazaDanychZDnia mBazaDanychZDnia;
-    private Button mDataPrzycisk, mDodaj, mSpozyteProdukty;
+    private Button mDataPrzycisk, mSpozyteProdukty;
     private ListView mWidokListy;
     private String mObecnaData;
+    private TextView mBialko, mWeglowowany, mTluszcze, mKCAL;
+    private int sumaBialka, sumaWeglowodanow, sumaTluszczy, sumaKCAL;
     private static String mWybranaData;
-    private List<String> mlistaNazwProduktow;
+    private List<Integer> mlistaID;
     private ArrayList<Produkt> mlistaProduktow;
     private Cursor mProdukt;
 
@@ -56,11 +58,18 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         setContentView(R.layout.activity_main);
         przyznanieDostepu();
 
+        mBialko = (TextView)findViewById(R.id.bialko);
+        mWeglowowany = (TextView)findViewById(R.id.weglowodany);
+        mTluszcze = (TextView)findViewById(R.id.tluszcze);
+        mKCAL = (TextView)findViewById(R.id.kcal);
         mDataPrzycisk = (Button)findViewById(R.id.btnDataPrzycisk);
-        mDodaj = (Button)findViewById(R.id.btnDodaj);
         mSpozyteProdukty = (Button)findViewById(R.id.btnSpozyteProdukty);
         mWidokListy = (ListView)findViewById(R.id.widokListy);
         mBazaDanychZDnia = new BazaDanychZDnia(this);
+        sumaBialka = 0;
+        sumaWeglowodanow = 0;
+        sumaTluszczy = 0;
+        sumaKCAL = 0;
 
         mObecnaData = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
         if(mWybranaData==null) {
@@ -72,14 +81,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void onClick(View v) {
                 pokazOknoWyboruDaty();
-            }
-        });
-
-        mDodaj.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DodawanieProduktowActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -108,35 +109,55 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     private void wyswietlWidokListy() {
         mProdukt = mBazaDanychZDnia.uzyskajProduktZBazy(mWybranaData);
-        mlistaNazwProduktow = new ArrayList<String>();
+        mlistaID = new ArrayList<Integer>();
         mlistaProduktow = new ArrayList();
         while(mProdukt.moveToNext()) {
+            int a, b, c, d, e;
             Produkt produkt = new Produkt();
+            produkt.setID(mProdukt.getInt(0));
+            mlistaID.add(mProdukt.getInt(0));
             produkt.setNazwaProduktu(mProdukt.getString(1));
-            mlistaNazwProduktow.add(mProdukt.getString(1));
-            produkt.setKalorycznosc(mProdukt.getInt(2));
-            produkt.setBialko(mProdukt.getInt(3));
-            produkt.setWeglowodany(mProdukt.getInt(4));
-            produkt.setTluszcze(mProdukt.getInt(5));
-            produkt.setWagaProduktu(mProdukt.getInt(6));
+            a=mProdukt.getInt(2);
+            produkt.setKalorycznosc(a);
+            b=mProdukt.getInt(3);
+            produkt.setBialko(b);
+            c=mProdukt.getInt(4);
+            produkt.setWeglowodany(c);
+            d=mProdukt.getInt(5);
+            produkt.setTluszcze(d);
+            e=mProdukt.getInt(6);
+            produkt.setWagaProduktu(e);
             mlistaProduktow.add(produkt);
+            sumaBialka = sumaBialka + ((b * e)/100);
+            sumaWeglowodanow = sumaWeglowodanow + ((c * e)/100);
+            sumaTluszczy = sumaTluszczy + ((d * e)/100);
+            sumaKCAL = sumaKCAL + ((a * e)/100);
         }
 
         ProduktAdapter adapter = new ProduktAdapter(this, R.layout.adapter_layout, mlistaProduktow);
         mWidokListy.setAdapter(adapter);
 
+        mBialko.setText(sumaBialka + " g  ");
+        mTluszcze.setText(sumaTluszczy + " g  ");
+        mWeglowowany.setText(sumaWeglowodanow + " g  ");
+        mKCAL.setText(sumaKCAL + " kcal  ");
+
         mWidokListy.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-                String nazwa = (String)mlistaNazwProduktow.get(i);
-                Cursor produkt = mBazaDanychZDnia.uzyskajIDProduktu(nazwa);
-                int ID = -1;
+                int ID = (int)mlistaID.get(i);
+                Cursor produkt = mBazaDanychZDnia.uzyskajNazweMiareProduktu(ID);
+                String nazwa = null;
+                int miara = 0;
                 while(produkt.moveToNext()) {
-                    ID = produkt.getInt(0);
+                    nazwa = produkt.getString(0);
+                    miara = produkt.getInt(1);
                 }
-                if(ID > -1) {
+                if(nazwa != null) {
                     Intent intent = new Intent(MainActivity.this, EdytowanieProduktowActivity.class);
                     intent.putExtra("ID", ID);
+                    intent.putExtra("Nazwa", nazwa);
+                    intent.putExtra("Miara", miara);
                     startActivity(intent);
                 }
                 else {

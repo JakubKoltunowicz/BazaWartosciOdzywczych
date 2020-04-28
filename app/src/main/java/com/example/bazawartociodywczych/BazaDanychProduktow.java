@@ -70,16 +70,4 @@ public class BazaDanychProduktow extends SQLiteOpenHelper {
         Cursor produkt = db.rawQuery(query, null);
         return produkt;
     }
-
-    public void usunProdukt(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + NAZWA_TABELI + " WHERE " + KOL1 + " = '" + id + "'";
-        db.execSQL(query);
-    }
-
-    public void zaaktualizujNazwe(String nowaNazwa, int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + NAZWA_TABELI + " SET " + KOL2 + " = '" + nowaNazwa + "' WHERE " + KOL1 + " = '" + id;
-        db.execSQL(query);
-    }
 }

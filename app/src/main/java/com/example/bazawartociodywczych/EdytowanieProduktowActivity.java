@@ -5,49 +5,60 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class EdytowanieProduktowActivity extends AppCompatActivity {
 
-    private Button mBtnZapisz, mBtnUsun;
-    private EditText mNowaNazwa;
-    private int mWybraneID;
+    private Button mBtnZapiszZmiany, mBtnUsunProdukt;
+    private EditText mMiaraProduktu;
+    private int mWybraneID, mMiara, mWybranaMiara;
     private BazaDanychZDnia mBazaDanychZDnia;
+    private String mMiara1, mWybranaNazwa;
+    private TextView mNazwaProduktu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edytowanie_produktow_layout);
 
-        mBtnZapisz = (Button)findViewById(R.id.btnZapisz);
-        mBtnUsun = (Button)findViewById(R.id.btnUsun);
-        mNowaNazwa = (EditText)findViewById(R.id.nowaNazwa);
+        mBtnZapiszZmiany = (Button)findViewById(R.id.btnZapiszZmiany);
+        mBtnUsunProdukt = (Button)findViewById(R.id.btnUsunProdukt);
+        mMiaraProduktu = (EditText)findViewById(R.id.miaraProduktu);
+        mNazwaProduktu = (TextView)findViewById(R.id.nazwaProduktu);
         mBazaDanychZDnia = new BazaDanychZDnia(this);
 
         Intent intent = getIntent();
 
         mWybraneID = intent.getIntExtra("ID", -1);
+        mWybranaNazwa = intent.getStringExtra("Nazwa");
+        mWybranaMiara = intent.getIntExtra("Miara", -1);
+        mNazwaProduktu.setText(mWybranaNazwa);
+        mMiaraProduktu.setText("" + mWybranaMiara);
 
-        mBtnZapisz.setOnClickListener(new View.OnClickListener() {
+        mBtnZapiszZmiany.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String item = mNowaNazwa.getText().toString();
-                if(!item.equals("")){
-                    mBazaDanychZDnia.zaaktualizujNazwe(item, mWybraneID);
+                mMiara1 = mMiaraProduktu.getText().toString();
+                mMiara = Integer.parseInt(mMiara1);
+                if(!mMiara1.equals("")){
+                    mBazaDanychZDnia.zaaktualizujMiare(mMiara, mWybraneID);
+                    wyswietlWiadomosc("Wprowadzono zmiany");
                 }
                 else {
-                    wyswietlWiadomosc("Musisz wprowadzic nazwe");
+                    wyswietlWiadomosc("Musisz wprowadzic miarę");
                 }
             }
         });
 
-        mBtnUsun.setOnClickListener(new View.OnClickListener() {
+        mBtnUsunProdukt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mBazaDanychZDnia.usunProdukt(mWybraneID);
-                mNowaNazwa.setText("");
+                Intent intent = new Intent(EdytowanieProduktowActivity.this, MainActivity.class);
+                startActivity(intent);
                 wyswietlWiadomosc("Usunieto z listy");
             }
         });

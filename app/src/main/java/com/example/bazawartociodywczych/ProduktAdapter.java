@@ -43,7 +43,7 @@ public class ProduktAdapter extends ArrayAdapter<Produkt> {
 
         tvNazwaProduktu.setText(NazwaProduktu);
         tvWagaProduktu.setText("(" + WagaProduktu + "g)");
-        tvKalorycznosc.setText(Kalorycznosc + " kcal   ");
+        tvKalorycznosc.setText("Na 100g:   " + Kalorycznosc + " kcal   ");
         tvBialko.setText(Bialko + " B   ");
         tvWeglowodany.setText(Weglowodany + " W   ");
         tvTluszcze.setText(Tluszcze + " T   ");

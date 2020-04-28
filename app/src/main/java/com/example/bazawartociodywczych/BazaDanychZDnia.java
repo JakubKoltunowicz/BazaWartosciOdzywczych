@@ -35,7 +35,7 @@ public class BazaDanychZDnia extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void dodajProduktDoBazy(Produkt produkt, Integer miara, String data) {
+    public void dodajProduktDoBazy(Produkt produkt, String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues wartosci = new ContentValues();
         wartosci.put(KOL2, produkt.getNazwaProduktu());
@@ -43,7 +43,7 @@ public class BazaDanychZDnia extends SQLiteOpenHelper {
         wartosci.put(KOL4, produkt.getBialko());
         wartosci.put(KOL5, produkt.getWeglowodany());
         wartosci.put(KOL6, produkt.getTluszcze());
-        wartosci.put(KOL7, miara);
+        wartosci.put(KOL7, produkt.getWagaProduktu());
         wartosci.put(KOL8, data);
 
         db.insert(NAZWA_TABELI, null, wartosci);
@@ -55,17 +55,10 @@ public class BazaDanychZDnia extends SQLiteOpenHelper {
         Cursor produkt = db.rawQuery(query, null);
         return produkt;
     }
-/*
-    public Cursor uzyskajKonkretnyProdukt(String nazwa) {
+
+    public Cursor uzyskajNazweMiareProduktu(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + NAZWA_TABELI + " WHERE " + KOL2 + " = '" + nazwa + "'";
-        Cursor produkt = db.rawQuery(query, null);
-        return produkt;
-    }
-*/
-    public Cursor uzyskajIDProduktu(String nazwa) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + KOL1 + " FROM " + NAZWA_TABELI + " WHERE " + KOL2 + " = '" + nazwa + "'";
+        String query = "SELECT " + KOL2 + ", " + KOL7 + " FROM " + NAZWA_TABELI + " WHERE " + KOL1 + " = '" + id + "'";
         Cursor produkt = db.rawQuery(query, null);
         return produkt;
     }
@@ -76,9 +69,9 @@ public class BazaDanychZDnia extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
-    public void zaaktualizujNazwe(String nowaNazwa, int id) {
+    public void zaaktualizujMiare(int nowaMiara, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + NAZWA_TABELI + " SET " + KOL2 + " = '" + nowaNazwa + "' WHERE " + KOL1 + " = '" + id;
+        String query = "UPDATE " + NAZWA_TABELI + " SET " + KOL7 + " = '" + nowaMiara + "' WHERE " + KOL1 + " = '" + id + "'";
         db.execSQL(query);
     }
 

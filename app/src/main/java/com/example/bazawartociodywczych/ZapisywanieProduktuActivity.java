@@ -62,7 +62,8 @@ public class ZapisywanieProduktuActivity extends AppCompatActivity {
                 mMiara1 = mMiaraProduktu.getText().toString();
                 mMiara = Integer.parseInt(mMiara1);
                 if(!mMiara1.equals("")){
-                    mBazaDanychZDnia.dodajProduktDoBazy(produkt, mMiara, mWybranaData);
+                    produkt.setWagaProduktu(mMiara);
+                    mBazaDanychZDnia.dodajProduktDoBazy(produkt, mWybranaData);
                     Intent intent = new Intent(ZapisywanieProduktuActivity.this, MainActivity.class);
                     startActivity(intent);
                 }

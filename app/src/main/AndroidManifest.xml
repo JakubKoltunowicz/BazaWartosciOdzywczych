@@ -36,7 +36,7 @@
         </activity>
 
         <provider
-            android:authorities="com.example.android.fileprovider1"
+            android:authorities="com.example.android.bazawartociodywczych"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
