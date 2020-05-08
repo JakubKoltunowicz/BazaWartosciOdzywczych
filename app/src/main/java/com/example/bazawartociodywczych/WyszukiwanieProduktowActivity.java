@@ -16,20 +16,27 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.List;
 
 public class WyszukiwanieProduktowActivity extends AppCompatActivity {
 
     private static final int KOD_APARATU = 2;
 
     private BazaDanychProduktow mBazaDanychProduktow;
-    private ProduktZSerwera mProduktZSerwera;
     private EditText mWyszukiwarka;
     private Button mZrobZdjecie;
     private ListView mWidokListy;
@@ -38,6 +45,10 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
     private Produkt mNowyProdukt;
     private ArrayList<String> mlistaProduktow;
     private ArrayAdapter adapter;
+    private String ID;
+    private static HttpURLConnection mConnection;
+    private String mDane;
+    private JSONObject produkt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,11 +102,11 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
                 String nazwa = adapterView.getItemAtPosition(i).toString();
                 Cursor produkt = mBazaDanychProduktow.uzyskajIDProduktu(nazwa);
-                int ID = -1;
+                int ID1 = -1;
                 while(produkt.moveToNext()) {
-                    ID = produkt.getInt(0);
+                    ID1 = produkt.getInt(0);
                 }
-                if(ID > -1) {
+                if(ID1 > -1) {
                     Intent intent = new Intent(WyszukiwanieProduktowActivity.this, ZapisywanieProduktuActivity.class);
                     intent.putExtra("Nazwa", nazwa);
                     intent.putExtra("Data", mWybranaData);
@@ -122,16 +133,113 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        File katalog = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        String sciezka = katalog + "/zdjecie.jpg";
         mNowyProdukt = new Produkt();
-        mProduktZSerwera = new ProduktZSerwera();
-        mNowyProdukt = mProduktZSerwera.wyslijZdjecie();
+
+        wyslijZdjecie(sciezka);
+    }
+
+    public void wyslijZdjecie(String sciezka) {
+
+        File file = new File(sciezka);
+
+        RequestParams params = new RequestParams();
+        try {
+            params.put("file", file);
+        }
+        catch (FileNotFoundException e) {
+        }
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.post("http://192.168.0.116:8080/api/file", params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                ID = (new String(responseBody)).toString();
+
+                if(Integer.parseInt(ID) != 0) {
+                    odbierzProdukt(Integer.parseInt(ID));
+                }
+                else {
+                    wyswietlWiadomosc("Brak Prouduktu w bazie");
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
+    }
+
+    public void odbierzProdukt(int ID) {
+        RequestParams params = new RequestParams();
+        params.put("ID", ID);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get("http://192.168.0.116:8080/api/produkty", params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                mDane = (new String(responseBody)).toString();
+                dodajProdukt(mDane);
+            }
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
+    }
+
+    public void dodajProdukt(String mDane) {
+
+        try {
+            produkt = new JSONObject(mDane);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //for (int i = 0; i < produkt.length(); i++)
+        //{
+        try {
+            mNowyProdukt.setNazwaProduktu(produkt.getString("nazwaProduktu"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            mNowyProdukt.setKalorycznosc(produkt.getInt("kalorycznosc"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            mNowyProdukt.setBialko(produkt.getInt("bialko"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            mNowyProdukt.setWeglowodany(produkt.getInt("weglowodany"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            mNowyProdukt.setTluszcze(produkt.getInt("tluszcze"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            mNowyProdukt.setWagaProduktu(produkt.getInt("wagaProduktu"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //}
+
         mNazwa = mNowyProdukt.getNazwaProduktu();
         mProdukt = mBazaDanychProduktow.uzyskajIDProduktu(mNazwa);
-        int ID = -1;
+        int ID1 = -1;
         while(mProdukt.moveToNext()) {
-            ID = mProdukt.getInt(0);
+            ID1 = mProdukt.getInt(0);
         }
-        if(ID == -1) {
+        if(ID1 == -1) {
             mBazaDanychProduktow.dodajProduktDoBazy(mNowyProdukt);
         }
         Intent intent2 = new Intent(WyszukiwanieProduktowActivity.this, ZapisywanieProduktuActivity.class);
