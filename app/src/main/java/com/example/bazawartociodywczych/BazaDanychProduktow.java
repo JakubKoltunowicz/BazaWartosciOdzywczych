@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.NavigationRes;
-import androidx.annotation.Nullable;
-
 public class BazaDanychProduktow extends SQLiteOpenHelper {
 
     private static final String NAZWA_TABELI = "Produkty";

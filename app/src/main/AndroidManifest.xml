@@ -26,9 +26,6 @@
         <activity android:name=".EdytowanieProduktowActivity"
             android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".DodawanieProduktowActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
         <activity android:name=".WyszukiwanieProduktowActivity"
             android:parentActivityName=".MainActivity">
         </activity>

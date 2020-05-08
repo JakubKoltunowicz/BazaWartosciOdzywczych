@@ -12,7 +12,19 @@ import java.util.ArrayList;
 public class ProduktAdapter extends ArrayAdapter<Produkt> {
 
     private Context mContext;
-    int mResource;
+    private String mNazwaProduktu;
+    private int mResource;
+    private int mKalorycznosc;
+    private int mBialko;
+    private int mWeglowodany;
+    private int mTluszcze;
+    private int mWagaProduktu;
+    private TextView mTvNazwaProduktu;
+    private TextView mTvWagaProduktu;
+    private TextView mTvKalorycznosc;
+    private TextView mTvBialko;
+    private TextView mTvWeglowodany;
+    private TextView mTvTluszcze;
 
     public ProduktAdapter(Context context, int resource, ArrayList<Produkt> objects) {
         super(context, resource, objects);
@@ -22,31 +34,31 @@ public class ProduktAdapter extends ArrayAdapter<Produkt> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String NazwaProduktu = getItem(position).getNazwaProduktu();
-        int Kalorycznosc = getItem(position).getKalorycznosc();
-        int Bialko = getItem(position).getBialko();
-        int Weglowodany = getItem(position).getWeglowodany();
-        int Tluszcze = getItem(position).getTluszcze();
-        int WagaProduktu = getItem(position).getWagaProduktu();
+        mNazwaProduktu = getItem(position).getNazwaProduktu();
+        mKalorycznosc = getItem(position).getKalorycznosc();
+        mBialko = getItem(position).getBialko();
+        mWeglowodany = getItem(position).getWeglowodany();
+        mTluszcze = getItem(position).getTluszcze();
+        mWagaProduktu = getItem(position).getWagaProduktu();
 
-        Produkt produkt = new Produkt(NazwaProduktu, Kalorycznosc, Bialko, Weglowodany, Tluszcze, WagaProduktu);
+        Produkt produkt = new Produkt(mNazwaProduktu, mKalorycznosc, mBialko, mWeglowodany, mTluszcze, mWagaProduktu);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
 
-        TextView tvNazwaProduktu = (TextView)convertView.findViewById((R.id.widok1));
-        TextView tvWagaProduktu = (TextView)convertView.findViewById((R.id.widok2));
-        TextView tvKalorycznosc = (TextView)convertView.findViewById((R.id.widok3));
-        TextView tvBialko = (TextView)convertView.findViewById((R.id.widok4));
-        TextView tvWeglowodany = (TextView)convertView.findViewById((R.id.widok5));
-        TextView tvTluszcze = (TextView)convertView.findViewById((R.id.widok6));
+        mTvNazwaProduktu = (TextView)convertView.findViewById((R.id.widok1));
+        mTvWagaProduktu = (TextView)convertView.findViewById((R.id.widok2));
+        mTvKalorycznosc = (TextView)convertView.findViewById((R.id.widok3));
+        mTvBialko = (TextView)convertView.findViewById((R.id.widok4));
+        mTvWeglowodany = (TextView)convertView.findViewById((R.id.widok5));
+        mTvTluszcze = (TextView)convertView.findViewById((R.id.widok6));
 
-        tvNazwaProduktu.setText(NazwaProduktu);
-        tvWagaProduktu.setText("(" + WagaProduktu + "g)");
-        tvKalorycznosc.setText("Na 100g:   " + Kalorycznosc + " kcal   ");
-        tvBialko.setText(Bialko + " B   ");
-        tvWeglowodany.setText(Weglowodany + " W   ");
-        tvTluszcze.setText(Tluszcze + " T   ");
+        mTvNazwaProduktu.setText(mNazwaProduktu);
+        mTvWagaProduktu.setText("(" + mWagaProduktu + "g)");
+        mTvKalorycznosc.setText("Na 100g:   " + mKalorycznosc + " kcal   ");
+        mTvBialko.setText(mBialko + " B   ");
+        mTvWeglowodany.setText(mWeglowodany + " W   ");
+        mTvTluszcze.setText(mTluszcze + " T   ");
 
         return convertView;
     }

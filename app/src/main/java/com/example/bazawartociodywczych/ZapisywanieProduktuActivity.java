@@ -11,14 +11,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
 public class ZapisywanieProduktuActivity extends AppCompatActivity {
-
     private Button mBtnDodajProdukt;
     private EditText mMiaraProduktu;
     private String mWybranaData, mMiara1, mWybranaNazwa;
-    private int mMiara, mKalorycznosc, mBialko, mWeglowodany, mTluszcze, mWaga;
+    private int mMiara;
     private TextView mNazwaProduktu, mWagaProduktu;
     private BazaDanychProduktow mBazaDanychProduktow;
     private BazaDanychZDnia mBazaDanychZDnia;
@@ -38,9 +35,9 @@ public class ZapisywanieProduktuActivity extends AppCompatActivity {
         mBazaDanychZDnia = new BazaDanychZDnia(this);
         produkt = new Produkt();
 
-        Intent intent = getIntent();
-        mWybranaNazwa = intent.getStringExtra("Nazwa");
-        mWybranaData = intent.getStringExtra("Data");
+        Intent intent1 = getIntent();
+        mWybranaNazwa = intent1.getStringExtra("Nazwa");
+        mWybranaData = intent1.getStringExtra("Data");
 
         mProdukt = mBazaDanychProduktow.uzyskajKonkretnyProdukt(mWybranaNazwa);
         while(mProdukt.moveToNext()) {
@@ -72,7 +69,6 @@ public class ZapisywanieProduktuActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void wyswietlWiadomosc(String wiadomosc) {

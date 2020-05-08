@@ -4,22 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -28,7 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,9 +77,9 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         mSpozyteProdukty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, WyszukiwanieProduktowActivity.class);
-                intent.putExtra("Data", mWybranaData);
-                startActivity(intent);
+                Intent intent1 = new Intent(MainActivity.this, WyszukiwanieProduktowActivity.class);
+                intent1.putExtra("Data", mWybranaData);
+                startActivity(intent1);
             }
         });
 
@@ -154,18 +144,17 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     miara = produkt.getInt(1);
                 }
                 if(nazwa != null) {
-                    Intent intent = new Intent(MainActivity.this, EdytowanieProduktowActivity.class);
-                    intent.putExtra("ID", ID);
-                    intent.putExtra("Nazwa", nazwa);
-                    intent.putExtra("Miara", miara);
-                    startActivity(intent);
+                    Intent intent2 = new Intent(MainActivity.this, EdytowanieProduktowActivity.class);
+                    intent2.putExtra("ID", ID);
+                    intent2.putExtra("Nazwa", nazwa);
+                    intent2.putExtra("Miara", miara);
+                    startActivity(intent2);
                 }
                 else {
                     wyswietlWiadomosc("Brak ID powiazanego z ta nazwa");
                 }
             }
         });
-
     }
 
     @Override

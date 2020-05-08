@@ -10,7 +10,12 @@ public class Produkt {
     private int wagaProduktu;
 
     public  Produkt() {
-
+        this.nazwaProduktu = "";
+        this.kalorycznosc = 0;
+        this.bialko = 0;
+        this.weglowodany = 0;
+        this.tluszcze = 0;
+        this.wagaProduktu = 0;
     }
 
     public Produkt (String nazwaProduktu, int kalorycznosc, int bialko, int weglowodany, int tluszcze, int wagaProduktu) {

@@ -30,11 +30,11 @@ public class EdytowanieProduktowActivity extends AppCompatActivity {
         mNazwaProduktu = (TextView)findViewById(R.id.nazwaProduktu);
         mBazaDanychZDnia = new BazaDanychZDnia(this);
 
-        Intent intent = getIntent();
+        Intent intent1 = getIntent();
 
-        mWybraneID = intent.getIntExtra("ID", -1);
-        mWybranaNazwa = intent.getStringExtra("Nazwa");
-        mWybranaMiara = intent.getIntExtra("Miara", -1);
+        mWybraneID = intent1.getIntExtra("ID", -1);
+        mWybranaNazwa = intent1.getStringExtra("Nazwa");
+        mWybranaMiara = intent1.getIntExtra("Miara", -1);
         mNazwaProduktu.setText(mWybranaNazwa);
         mMiaraProduktu.setText("" + mWybranaMiara);
 
@@ -57,8 +57,8 @@ public class EdytowanieProduktowActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mBazaDanychZDnia.usunProdukt(mWybraneID);
-                Intent intent = new Intent(EdytowanieProduktowActivity.this, MainActivity.class);
-                startActivity(intent);
+                Intent intent2 = new Intent(EdytowanieProduktowActivity.this, MainActivity.class);
+                startActivity(intent2);
                 wyswietlWiadomosc("Usunieto z listy");
             }
         });

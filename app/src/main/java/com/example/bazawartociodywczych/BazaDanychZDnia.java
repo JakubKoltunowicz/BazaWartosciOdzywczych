@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class BazaDanychZDnia extends SQLiteOpenHelper {
-
     private static final String NAZWA_TABELI = "ListaProduktow";
     private static final String KOL1 = "ID";
     private static final String KOL2 = "nazwaProduktu";
@@ -74,5 +73,4 @@ public class BazaDanychZDnia extends SQLiteOpenHelper {
         String query = "UPDATE " + NAZWA_TABELI + " SET " + KOL7 + " = '" + nowaMiara + "' WHERE " + KOL1 + " = '" + id + "'";
         db.execSQL(query);
     }
-
 }
