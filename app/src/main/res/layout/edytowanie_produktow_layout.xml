@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:text="Produkt: "/>
+            android:text="@string/produkt"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -29,17 +29,19 @@
         <TextView
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:text="Edytuj miarę: "/>
+            android:text="@string/edytuj_miare"/>
 
         <EditText
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:id="@+id/miaraProduktu"/>
+            android:id="@+id/miaraProduktu"
+            android:autofillHints=""
+            android:inputType="text" />
 
         <TextView
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:text=" g"/>
+            android:text="@string/gramy"/>
 
     </LinearLayout>
 

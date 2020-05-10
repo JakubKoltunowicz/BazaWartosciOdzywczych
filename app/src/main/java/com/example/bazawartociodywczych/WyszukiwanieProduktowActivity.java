@@ -1,7 +1,10 @@
 package com.example.bazawartociodywczych;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -136,10 +139,21 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
         String sciezka = katalog + "/zdjecie.jpg";
         mNowyProdukt = new Produkt();
 
-        wyslijZdjecie(sciezka);
+        ConnectivityManager connectManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo networkInfo = connectManager.getActiveNetworkInfo();
+        if(networkInfo != null) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                wyslijZdjecie(sciezka);
+            }
+        }
+        else {
+            wyswietlWiadomosc("Brak dostępu do internetu");
+            finish();
+        }
     }
 
     public void wyslijZdjecie(String sciezka) {
+
         mFile = new File(sciezka);
         mParams1 = new RequestParams();
         try {

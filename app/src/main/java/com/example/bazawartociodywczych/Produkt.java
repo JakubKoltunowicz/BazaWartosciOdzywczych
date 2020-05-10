@@ -9,7 +9,7 @@ public class Produkt {
     private int tluszcze;
     private int wagaProduktu;
 
-    public  Produkt() {
+    public Produkt() {
         this.nazwaProduktu = "";
         this.kalorycznosc = 0;
         this.bialko = 0;

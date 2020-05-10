@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Baza Wartości Odżywczych</string>
+    <string name="dzienny_bilans_makroskladnikow">Dzienny bilans makroskładników</string>
+    <string name="bialko">Białko:</string>
+    <string name="weglowodany">Węglowodany:</string>
+    <string name="tluszcze">Tłuszcze:</string>
+    <string name="kilokalorie">Kilokalorie:</string>
+    <string name="spozyte_produkty">Spożyte produkty</string>
+    <string name="produkt">Produkt:</string>
+    <string name="edytuj_miare">Edytuj miarę:</string>
+    <string name="gramy">g</string>
+    <string name="zrob_zdjecie_produktowi">Zrób zdjęcie produktowi</string>
+    <string name="produkt2">Produkt:</string>
+    <string name="masa_netto">Masa netto:</string>
+    <string name="podaj_miare">Podaj miarę:</string>
+    <string name="gramy2">g</string>
+    <string name="dodaj_produkt">Dodaj produkt</string>
 </resources>

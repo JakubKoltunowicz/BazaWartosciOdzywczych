@@ -12,7 +12,7 @@
         android:layout_marginBottom="20dp"
         android:layout_gravity="center"
         android:background="@android:color/holo_green_light"
-        android:text="Zrób zdjęcie produktowi"
+        android:text="@string/zrob_zdjecie_produktowi"
         android:textSize="20sp"/>
 
     <LinearLayout
@@ -26,7 +26,9 @@
             android:layout_height="wrap_content"
             android:hint="wyszukaj w bazie"
             android:drawableLeft="@drawable/ic_szukaj"
-            android:id="@+id/wyszukiwarka"/>
+            android:id="@+id/wyszukiwarka"
+            android:autofillHints=""
+            android:inputType="text" />
 
         <ListView
             android:layout_width="match_parent"

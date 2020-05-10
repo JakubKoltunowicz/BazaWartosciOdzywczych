@@ -21,7 +21,7 @@
         android:layout_width="350dp"
         android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:text="Dzienny bilans makroskładników"/>
+        android:text="@string/dzienny_bilans_makroskladnikow"/>
 
     <LinearLayout
         android:layout_width="350dp"
@@ -32,7 +32,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Białko: "/>
+            android:text="@string/bialko"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -49,7 +49,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Węglowodany: "/>
+            android:text="@string/weglowodany"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -66,7 +66,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tłuszcze: "/>
+            android:text="@string/tluszcze"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -83,7 +83,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kilokalorie: "/>
+            android:text="@string/kilokalorie"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -102,8 +102,8 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Spożyte produkty"
-            android:drawableLeft="@drawable/ic_dodaj"
+            android:text="@string/spozyte_produkty"
+            android:drawableStart="@drawable/ic_dodaj"
             android:id="@+id/btnSpozyteProdukty"/>
 
         <ListView
