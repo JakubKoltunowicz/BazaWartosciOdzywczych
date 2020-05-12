@@ -9,10 +9,12 @@
     <string name="produkt">Produkt:</string>
     <string name="edytuj_miare">Edytuj miarę:</string>
     <string name="gramy">g</string>
-    <string name="zrob_zdjecie_produktowi">Zrób zdjęcie produktowi</string>
     <string name="produkt2">Produkt:</string>
     <string name="masa_netto">Masa netto:</string>
     <string name="podaj_miare">Podaj miarę:</string>
     <string name="gramy2">g</string>
     <string name="dodaj_produkt">Dodaj produkt</string>
+    <string name="wyszukaj_w_bazie">wyszukaj w bazie</string>
+    <string name="zrob_zdjecie">Zrób zdjęcie</string>
+    <string name="wybierz_zdjecie">Wybierz zdjęcie</string>
 </resources>

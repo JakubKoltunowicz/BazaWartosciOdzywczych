@@ -1,13 +1,17 @@
 package com.example.bazawartociodywczych;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,17 +36,25 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class WyszukiwanieProduktowActivity extends AppCompatActivity {
 
-    private static final int KOD_APARATU = 2;
+    private static final int KOD_APARATU = 1;
+    private static final int KOD_WYBORU = 2;
 
     private BazaDanychProduktow mBazaDanychProduktow;
     private EditText mWyszukiwarka;
-    private Button mZrobZdjecie;
+    private Button mZrobZdjecie, mWybierzZdjecie;
     private ListView mWidokListy;
-    private String mWybranaData, mNazwa1, mNazwa2, mNazwa3, ID, mDane;
+    private String mWybranaData, mNazwa1, mNazwa2, ID, mDane, mNazwaZdjecia;
     private Cursor mProdukt1, mProdukt2, mProdukt3;
     private Produkt mNowyProdukt;
     private ArrayList<String> mlistaProduktow;
@@ -49,7 +62,7 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
     private JSONObject mJSONProdukt;
     private AsyncHttpClient mClient1, mClient2;
     private RequestParams mParams1, mParams2;
-    private File mFile, mKatalog, mZdjecie;
+    private File mKatalog, mZdjecie1, mZdjecie2;
     private Uri mUri;
 
     @Override
@@ -61,6 +74,7 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
         mWybranaData = intent.getStringExtra("Data");
 
         mZrobZdjecie = (Button)findViewById(R.id.btnZdjeciePrzycisk);
+        mWybierzZdjecie = (Button)findViewById(R.id.btnWybierzZdjecie);
         mWidokListy = (ListView)findViewById(R.id.widokListy);
         mWyszukiwarka = (EditText)findViewById(R.id.wyszukiwarka);
         mBazaDanychProduktow = new BazaDanychProduktow(this);
@@ -68,10 +82,16 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
         mZrobZdjecie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                zrobZdjecie(v);
+                zrobZdjecie();
             }
         });
         wyswietlWidokListy();
+        mWybierzZdjecie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wybierzZdjecie(v);
+            }
+        });
     }
 
     private void wyswietlWidokListy() {
@@ -102,15 +122,15 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
         mWidokListy.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
-                mNazwa3 = adapterView.getItemAtPosition(i).toString();
-                mProdukt2 = mBazaDanychProduktow.uzyskajIDProduktu(mNazwa3);
+                mNazwa1 = adapterView.getItemAtPosition(i).toString();
+                mProdukt2 = mBazaDanychProduktow.uzyskajIDProduktu(mNazwa1);
                 int ID1 = -1;
                 while(mProdukt2.moveToNext()) {
                     ID1 = mProdukt2.getInt(0);
                 }
                 if(ID1 > -1) {
                     Intent intent = new Intent(WyszukiwanieProduktowActivity.this, ZapisywanieProduktuActivity.class);
-                    intent.putExtra("Nazwa", mNazwa3);
+                    intent.putExtra("Nazwa", mNazwa1);
                     intent.putExtra("Data", mWybranaData);
                     startActivity(intent);
                 }
@@ -121,62 +141,80 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
         });
     }
 
-    public void zrobZdjecie(View view) {
+    public void zrobZdjecie() {
         Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         mKatalog = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        mZdjecie = new File(mKatalog, "zdjecie.jpg");
+        mNazwaZdjecia = new SimpleDateFormat("ss.mm.HH.dd.MM.yyyy", Locale.getDefault()).format(new Date());
+        mZdjecie1 = new File(mKatalog, mNazwaZdjecia + ".jpg");
 
-        mUri = FileProvider.getUriForFile(this, "com.example.android.bazawartociodywczych", mZdjecie);
+        mUri = FileProvider.getUriForFile(this, "com.example.android.bazawartociodywczych", mZdjecie1);
         intent1.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
         startActivityForResult(intent1, KOD_APARATU);
     }
 
+    public void wybierzZdjecie(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, KOD_WYBORU);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        File katalog = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        String sciezka = katalog + "/zdjecie.jpg";
-        mNowyProdukt = new Produkt();
-
-        ConnectivityManager connectManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        final NetworkInfo networkInfo = connectManager.getActiveNetworkInfo();
-        if(networkInfo != null) {
-            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-                wyslijZdjecie(sciezka);
-            }
+        if(requestCode == KOD_APARATU) {
+            super.onActivityResult(requestCode, resultCode, data);
+            wyslijZdjecie(mZdjecie1);
         }
-        else {
-            wyswietlWiadomosc("Brak dostępu do internetu");
-            finish();
+        if(requestCode == KOD_WYBORU) {
+            String sciezka = uzyskajZdjecie(data.getData());
+            mZdjecie2 = new File(sciezka);
+            wyslijZdjecie(mZdjecie2);
         }
     }
 
-    public void wyslijZdjecie(String sciezka) {
+    public String uzyskajZdjecie(Uri uri) {
+        String[] projekcja = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projekcja, null, null, null);
+        startManagingCursor(cursor);
+        int columna = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(columna);
+    }
 
-        mFile = new File(sciezka);
+    public void wyslijZdjecie(File zdjecie) {
+        ConnectivityManager connectManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo networkInfo = connectManager.getActiveNetworkInfo();
         mParams1 = new RequestParams();
         try {
-            mParams1.put("file", mFile);
+            mParams1.put("file", zdjecie);
         }
         catch (FileNotFoundException e) {
         }
-        mClient1 = new AsyncHttpClient();
-        mClient1.post("http://192.168.0.116:8080/api/file", mParams1, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
-                ID = (new String(responseBody)).toString();
-                if(Integer.parseInt(ID) != 0) {
-                    odbierzProdukt(Integer.parseInt(ID));
-                }
-                else {
-                    wyswietlWiadomosc("Brak Prouduktu w bazie");
+        if(zdjecie.exists()) {
+            if(networkInfo != null) {
+                if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI || networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                    mClient1 = new AsyncHttpClient();
+                    mClient1.post("http://192.168.0.116:8080/api/file", mParams1, new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                            ID = (new String(responseBody)).toString();
+                            if(Integer.parseInt(ID) != 0) {
+                                odbierzProdukt(Integer.parseInt(ID));
+                            }
+                            else {
+                                wyswietlWiadomosc("Brak Prouduktu w bazie");
+                            }
+                        }
+                        @Override
+                        public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                        }
+                    });
                 }
             }
-            @Override
-            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+            else {
+                wyswietlWiadomosc("Brak dostępu do internetu, zdjęcie zapisane");
+                finish();
             }
-        });
+        }
     }
 
     public void odbierzProdukt(int ID) {
@@ -196,6 +234,7 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
     }
 
     public void dodajProdukt(String mDane) {
+        mNowyProdukt = new Produkt();
         try {
             mJSONProdukt = new JSONObject(mDane);
         } catch (JSONException e) {
@@ -232,8 +271,8 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        mNazwa3 = mNowyProdukt.getNazwaProduktu();
-        mProdukt3 = mBazaDanychProduktow.uzyskajIDProduktu(mNazwa3);
+        mNazwa2 = mNowyProdukt.getNazwaProduktu();
+        mProdukt3 = mBazaDanychProduktow.uzyskajIDProduktu(mNazwa2);
         int ID1 = -1;
         while(mProdukt3.moveToNext()) {
             ID1 = mProdukt3.getInt(0);
@@ -242,7 +281,7 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
             mBazaDanychProduktow.dodajProduktDoBazy(mNowyProdukt);
         }
         Intent intent2 = new Intent(WyszukiwanieProduktowActivity.this, ZapisywanieProduktuActivity.class);
-        intent2.putExtra("Nazwa", mNazwa3);
+        intent2.putExtra("Nazwa", mNazwa2);
         intent2.putExtra("Data", mWybranaData);
         startActivity(intent2);
     }

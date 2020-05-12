@@ -34,10 +34,9 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private BazaDanychZDnia mBazaDanychZDnia;
     private Button mDataPrzycisk, mSpozyteProdukty;
     private ListView mWidokListy;
-    private String mObecnaData;
+    private String mObecnaData, mWybranaData;
     private TextView mBialko, mWeglowowany, mTluszcze, mKCAL;
     private int sumaBialka, sumaWeglowodanow, sumaTluszczy, sumaKCAL;
-    private static String mWybranaData;
     private List<Integer> mlistaID;
     private ArrayList<Produkt> mlistaProduktow;
     private Cursor mProdukt;
