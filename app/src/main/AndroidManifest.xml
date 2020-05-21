@@ -34,6 +34,9 @@
         <activity android:name=".ZapisywanieProduktuActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+        <activity android:name=".ReczneDodawanieActivity"
+            android:parentActivityName=".WyszukiwanieProduktowActivity">
+        </activity>
 
         <provider
             android:authorities="com.example.android.bazawartociodywczych"

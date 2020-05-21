@@ -17,4 +17,19 @@
     <string name="wyszukaj_w_bazie">wyszukaj w bazie</string>
     <string name="zrob_zdjecie">Zrób zdjęcie</string>
     <string name="wybierz_zdjecie">Wybierz zdjęcie</string>
+    <string name="dodaj_nowy_produkt_recznie">Dodaj nowy produkt ręcznie</string>
+    <string name="wpisz_dane_nowego_produktu">Wpisz dane nowego produktu:</string>
+    <string name="nazwa_produktu">Nazwa produktu:</string>
+    <string name="kalorycznosc">Kaloryczność:</string>
+    <string name="kcal">kcal</string>
+    <string name="bialko1">Białko:</string>
+    <string name="g1">g</string>
+    <string name="weglowodany1">Węglowodany:</string>
+    <string name="g2">g</string>
+    <string name="tluszcze1">Tuszcze:</string>
+    <string name="g3">g</string>
+    <string name="masa_netto_produktu1">Masa netto produktu:</string>
+    <string name="g4">g</string>
+    <string name="dodaj_nowy_produkt1">Dodaj nowy produkt</string>
+    <string name="podaj_zawartosc_w_100_gramach_produktu">Podaj zawartość w 100 gramach produktu:</string>
 </resources>

@@ -52,9 +52,9 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
 
     private BazaDanychProduktow mBazaDanychProduktow;
     private EditText mWyszukiwarka;
-    private Button mZrobZdjecie, mWybierzZdjecie;
+    private Button mZrobZdjecie, mWybierzZdjecie, mDodajRecznie;
     private ListView mWidokListy;
-    private String mWybranaData, mNazwa1, mNazwa2, ID, mDane, mNazwaZdjecia;
+    private String mNazwa1, mNazwa2, ID, mDane, mNazwaZdjecia, mOtrzymanaData;
     private Cursor mProdukt1, mProdukt2, mProdukt3;
     private Produkt mNowyProdukt;
     private ArrayList<String> mlistaProduktow;
@@ -64,6 +64,7 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
     private RequestParams mParams1, mParams2;
     private File mKatalog, mZdjecie1, mZdjecie2;
     private Uri mUri;
+    private static String mWybranaData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +72,15 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
         setContentView(R.layout.wyszuiwanie_produktow_layout);
 
         Intent intent = getIntent();
-        mWybranaData = intent.getStringExtra("Data");
+        mOtrzymanaData = intent.getStringExtra("Data");
+        if(mOtrzymanaData != null)
+        {
+            mWybranaData = mOtrzymanaData;
+        }
 
         mZrobZdjecie = (Button)findViewById(R.id.btnZdjeciePrzycisk);
         mWybierzZdjecie = (Button)findViewById(R.id.btnWybierzZdjecie);
+        mDodajRecznie = (Button)findViewById(R.id.btnDodajRecznie);
         mWidokListy = (ListView)findViewById(R.id.widokListy);
         mWyszukiwarka = (EditText)findViewById(R.id.wyszukiwarka);
         mBazaDanychProduktow = new BazaDanychProduktow(this);
@@ -85,13 +91,21 @@ public class WyszukiwanieProduktowActivity extends AppCompatActivity {
                 zrobZdjecie();
             }
         });
-        wyswietlWidokListy();
         mWybierzZdjecie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wybierzZdjecie(v);
             }
         });
+        mDodajRecznie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent3 = new Intent(WyszukiwanieProduktowActivity.this, ReczneDodawanieActivity.class);
+                intent3.putExtra("Data", mWybranaData);
+                startActivity(intent3);
+            }
+        });
+        wyswietlWidokListy();
     }
 
     private void wyswietlWidokListy() {
